@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Golden Events | Admin</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<div style="max-width:850px;margin:auto;padding:35px 6%">
+<a class="brand" style="color:#17130e" href="index.html"><span style="color:#17130e">GOLDEN</span><small>EVENTS MANAGEMENT</small></a>
+<div id="login" style="margin-top:55px;background:#fff;padding:35px;border:1px solid #e4d8c5">
+<p class="eyebrow">PRIVATE AREA</p><h1 style="font:600 50px 'Cormorant Garamond'">Admin Login</h1>
+<p style="color:#746d61">Demo password: <strong>golden123</strong>. Change it before using this as a real admin system.</p>
+<input id="pass" type="password" placeholder="Password" style="padding:14px;width:100%;border:1px solid #ddd;margin:12px 0">
+<button class="btn gold" onclick="login()">Login</button><p id="err" style="color:#a33"></p></div>
+<div id="panel" style="display:none;margin-top:55px">
+<p class="eyebrow">CONTENT MANAGER</p><h1 style="font:600 50px 'Cormorant Garamond'">Add a Photo / Post</h1>
+<p style="color:#746d61">Choose a photo from your phone. This demo saves it in this browser. For a real online multi-device admin, connect Firebase/Supabase using the included setup guide.</p>
+<input id="title" placeholder="Post title" style="padding:14px;width:100%;border:1px solid #ddd;margin:8px 0">
+<input id="photo" type="file" accept="image/*" style="padding:14px;width:100%;margin:8px 0">
+<button class="btn gold" onclick="addPost()">Add to Gallery</button>
+<div id="list" style="margin-top:35px"></div>
+<a class="btn outline" style="display:inline-block;margin-top:25px;color:#17130e" href="index.html">View Website</a>
+</div></div>
+<script>
+function login(){if(document.getElementById('pass').value==='golden123'){localStorage.setItem('goldenAdmin','1');show()}else document.getElementById('err').textContent='Wrong password.'}
+function show(){document.getElementById('login').style.display='none';document.getElementById('panel').style.display='block';render()}
+if(localStorage.getItem('goldenAdmin')==='1')show();
+function posts(){try{return JSON.parse(localStorage.getItem('goldenEventsPosts'))||[]}catch(e){return[]}}
+function save(p){localStorage.setItem('goldenEventsPosts',JSON.stringify(p))}
+function addPost(){const f=document.getElementById('photo').files[0],t=document.getElementById('title').value.trim()||'Golden Event';if(!f)return alert('Please select a photo.');const r=new FileReader();r.onload=()=>{let p=posts();p.push({title:t,image:r.result});save(p);document.getElementById('photo').value='';document.getElementById('title').value='';render();alert('Photo added to this browser gallery.');};r.readAsDataURL(f)}
+function del(i){let p=posts();p.splice(i,1);save(p);render()}
+function render(){let p=posts();document.getElementById('list').innerHTML=p.length?p.map((x,i)=>`<div style="display:flex;align-items:center;gap:12px;background:#fff;padding:10px;margin:8px 0;border:1px solid #eadfcb"><img src="${x.image}" style="width:80px;height:60px;object-fit:cover"><span style="flex:1">${x.title}</span><button onclick="del(${i})">Delete</button></div>`).join(''):'<p>No added posts yet.</p>'}
+</script></body></html>
